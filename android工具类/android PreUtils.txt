@@ -1,0 +1,60 @@
+import android.content.Context;
+import android.content.SharedPreferences;
+
+/**
+ * @author lpf
+ *	SharePrefrence的封装
+ *  SharePrefrence的封装
+ */
+public class PreUtils {
+
+	private  static SharedPreferences mPrefs;
+	public static void putBoolean(Context con ,String key,boolean value){
+		if(mPrefs==null){
+			mPrefs = con.getSharedPreferences("config", Context.MODE_PRIVATE);
+		}
+		mPrefs.edit().putBoolean(key, value).commit();
+	}
+	public static boolean getBoolean(Context con ,String key,boolean value){
+		if(mPrefs==null){
+			mPrefs = con.getSharedPreferences("config", Context.MODE_PRIVATE);
+		}
+		return mPrefs.getBoolean(key, value);
+	}
+	
+	public static void putString(Context con ,String key,String value){
+		if(mPrefs==null){
+			mPrefs = con.getSharedPreferences("config", Context.MODE_PRIVATE);
+		}
+		mPrefs.edit().putString(key, value).commit();
+	}
+	public static String getString(Context con ,String key,String value){
+		if(mPrefs==null){
+			mPrefs = con.getSharedPreferences("config", Context.MODE_PRIVATE);
+		}
+		return mPrefs.getString(key, value);
+	}
+	
+	public static void putInt(Context con ,String key,int value){
+		if(mPrefs==null){
+			mPrefs = con.getSharedPreferences("config", Context.MODE_PRIVATE);
+		}
+		mPrefs.edit().putInt(key, value).commit();
+	}
+	public static Integer getInt(Context con ,String key,int value){
+		if(mPrefs==null){
+			mPrefs = con.getSharedPreferences("config", Context.MODE_PRIVATE);
+		}
+		return mPrefs.getInt(key, value);
+	}
+	
+	
+	public static void removeString(Context con, String string) {
+		if(mPrefs==null){
+			mPrefs = con.getSharedPreferences("config", Context.MODE_PRIVATE);
+		}
+		mPrefs.edit().remove(string).commit();
+	}
+	
+	
+}

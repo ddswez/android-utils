@@ -1,0 +1,88 @@
+##一、Android开发中的权限集合
+
+（1）**打电话--权限**
+
+  * android.permission.CALL _PHONE
+ 
+（2）**发短信--权限**
+
+  * android.permission.SEND _SMS
+
+（3）**SDK-- 权限**
+
+  * 可写权限: WRITE _EXTERNAL _STORAGE 
+  * 可读权限: READ _EXTERNAL _STORAGE
+
+（4）**需链接网路--权限**
+
+  * android.permission.INTERNET
+ 
+（5）**监听短信--权限**
+
+  * android.permission.RECEIVE _SMS
+
+（6）**监听打电话广播--权限**
+
+  * android.permission.PROCESS _OUTGOING _CALLS
+
+（7）**开机广播--权限**
+
+  * android.permission.RECEIVE _BOOT _COMPLETED
+ 
+（8）--权限
+
+  * android.permission.RECORD _AUDIO
+
+（9）--权限
+
+  * android.permission.READ _PHONE _STATE
+
+（10）**手机振动--权限**
+
+  *  android.permission.VIBRATE
+ 
+（11）**获取地理定位--权限**
+
+  * android.permission.ACCESS _FINE _LOCATION
+  * android.permission.ACCESS _COARSE _LOCATION
+  * android.permission.ACCESS _MOCK _LOCATION
+
+（12）**读取系统联系人数据库表--权限**
+
+  * android.permission.READ_CONTACTS
+
+（13）**窗口管理器, 系统最高级别的界面--权限**
+
+  * android.permission.SYSTEM _ALERT _WINDOW
+  * 例如:  mWM = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+
+（14）**读取/写系统短信:--权限**
+  
+  * android.permission.READ _SMS 取
+  * android.permission.WRITE_SMS 写
+  * ContentProvider内容提供者中
+ 
+（15）**清除电话日志权限--权限**
+
+  * android.permission.READ _CALL _LOG
+  * android.permission.WRITE _CALL _LOG
+
+（16）**创建快捷方式 发广播需要权限--权限**
+
+  * com.android.launcher.permission.INSTALL _SHORTCUT
+
+（17）--权限
+
+  * 000
+ 
+（18）--权限
+
+  * 000
+
+（19）--权限
+
+  * 000
+
+（20）--权限
+
+  * 000

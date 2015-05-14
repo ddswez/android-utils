@@ -1,0 +1,267 @@
+#-----------安卓知识点: 事件集合---------------
+###一:onClick单击事件
+ * 案例:  第1.3天 电话拨号器+四种点击事件
+
+ * 代码:  [ 第1.3天 电话拨号器+四种点击事件 ]
+
+###二:onClick双击事件
+ * 案例: 双击事件
+ * 代码:
+ 
+		 public class MainActivity extends Activity {
+		
+			private long firstClickTime;// 第一次单击时间
+		
+			@Override
+			protected void onCreate(Bundle savedInstanceState) {
+				super.onCreate(savedInstanceState);
+				setContentView(R.layout.activity_main);
+			}
+		
+			public void onClick(View view) {
+				if (firstClickTime > 0) {
+					if (System.currentTimeMillis() - firstClickTime < 500) {
+						Toast.makeText(this, "双击啦!!!", Toast.LENGTH_SHORT).show();
+						firstClickTime = 0;
+					}
+				}
+		
+				firstClickTime = System.currentTimeMillis();
+			}
+		
+		}
+
+###三:onClick多击事件
+ * 案例:多击事件
+  
+ * 代码:
+		 public class MainActivity extends Activity {
+		
+			long[] mHits = new long[3];// 数组长度,表示点击次数
+		
+			@Override
+			protected void onCreate(Bundle savedInstanceState) {
+				super.onCreate(savedInstanceState);
+				setContentView(R.layout.activity_main);
+			}
+		
+			public void onClick(View view) {
+				System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);// 参1表示原数组,参2表示从原数组哪个位置开始拷贝,参3是目标数组,参4表示要拷贝到目标数组哪一位,参4表示拷贝长度
+				mHits[mHits.length - 1] = SystemClock.uptimeMillis();// 开机时间
+				if (mHits[0] >= (SystemClock.uptimeMillis() - 500)) {
+					Toast.makeText(this, "是男人!!!", Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+
+###四:委托手势识别器,处理触摸滑动事件
+ * 案例:安全卫士:欢迎使用手机防盗页面[ 基类里面调用 ]
+ 
+ * 代码:
+ 
+		public abstract class BaseSetupActivity extends Activity {
+		   
+			  private  GestureDetector mDetector; //手势识别器
+			  @Override
+			  protected void onCreate(Bundle savedInstanceState) {
+				 super.onCreate(savedInstanceState);
+				 
+				 mDetector=new GestureDetector(this,
+						 new GestureDetector.SimpleOnGestureListener(){
+					      /**
+					        * 快速滑动的事件回调 MotionEvent是对按下后"点"的封装 e1表示起点, e2表示终点  velocityX
+							* x方向的滑动速度
+					       */
+					       @Override
+					    public boolean onFling(MotionEvent e1, MotionEvent e2,
+					    		float velocityX, float velocityY) {
+		
+					    	// e1.getX();//以父控件为参照点的坐标, 相对父控件的坐标
+							// e1.getRawX();//以整个屏幕为参照点的原始坐标, 绝对坐标
+					    	
+					    	if (e2.getRawX() - e1.getRawX()>100) {// 向右滑动, 上一页
+					    		showPreviousPage();
+								return true;// 事件已经被消耗了
+							}
+					    	if (e2.getRawX() - e1.getRawX()<100) {// 向左滑动, 下一页
+					    		shownextPage();
+					    		return true;// 事件已经被消耗了
+					    	}
+					    	
+					    	// 判断滑动姿势对不对
+					    	if (Math.abs(e2.getRawY() - e1.getRawY())>100) {// y方向偏移量的绝对值太大
+					    		   ToastUtils.showToast(getApplicationContext(),"不能这样划哦!");
+								return true;// 事件已经被消耗了
+							}
+					    	// 判断滑动太慢
+					    	if (Math.abs(velocityX)>100) { // velocityX滑动速度
+					    		ToastUtils.showToast(getApplicationContext(),"您的速度太慢了哦!");
+								return true;// 事件已经被消耗了
+							}
+					    				    	
+					    	//返回值
+					    	return super.onFling(e1, e2, velocityX, velocityY);
+					    }
+					 
+					 
+				 });
+			  }
+				/**
+				  * Activity被触摸后的事件回调
+				*/
+				@Override
+				public boolean onTouchEvent(MotionEvent event) {
+		            mDetector.onTouchEvent(event);//委托手势识别器,处理触摸事件
+					return super.onTouchEvent(event);
+				}
+			
+				 
+				 
+			   //向侧的上一页方法
+			   public abstract void showPreviousPage();
+			   //向左侧的下一页方法
+			   public abstract void shownextPage();
+			   
+			   //点击下一页
+			   public void previousPage(View v){
+				   showPreviousPage();
+			   }
+			   //点击上一页
+			   public void nextPage(View v){
+				   shownextPage();
+			   }
+			   
+		}
+
+###五: 对象按下拖动/拽事件
+ * 案例: 安全卫士 [ 归属地显示的服务AddressService ]
+ * 代码:
+  
+        mView.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN: // 手指按下 //
+					// 记录起始坐标点位置
+					startX = (int) event.getRawX();
+					startY = (int) event.getRawY();
+					break;
+				case MotionEvent.ACTION_MOVE: // 手指按下移动 //
+					// 记录移动后的位置
+					int endX = (int) event.getRawX();
+					int endY = (int) event.getRawY();
+
+					// 计算偏移量
+					int dx = endX - startX;
+					int dy = endY - startY;
+
+					// 根据偏移量,更新图片位置
+					params.x += dx;
+					params.y += dy;
+
+					// 避免坐标越界
+					if (params.x < 0) {
+						params.x = 0;
+					}
+
+					// 避免坐标越界
+					if (params.y < 0) {
+						params.y = 0;
+					}
+
+					// 避免坐标越界
+					if (params.x > screenWidth - mView.getWidth()) {
+						params.x = screenWidth - mView.getWidth();
+					}
+
+					// 避免坐标越界
+					if (params.y > screenHeight - mView.getHeight() - 22) {
+						params.y = screenHeight - mView.getHeight() - 22;
+					}
+
+					System.out.println("x=" + params.x + ";y=" + params.y);
+					mWM.updateViewLayout(mView, params);// 更新窗口布局
+
+					// 重新初始化起点坐标
+					startX = (int) event.getRawX();
+					startY = (int) event.getRawY();
+					break;
+				case MotionEvent.ACTION_UP: // 手指抬起 //
+					// 记录位置
+					PrefUtils
+							.putInt(getApplicationContext(), "lastX", params.x);
+					PrefUtils
+							.putInt(getApplicationContext(), "lastY", params.y);
+					break;
+
+				default:
+					break;
+				}
+				return true;
+			}
+
+
+###六:ListView  item的点击监听 事件
+ * 案例: 安全卫士首页
+ * 代码:
+ 
+        //设置 九宫格数据 item的点击监听
+		gvHome.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				   switch (position) {
+						case 0:
+							//跳转的手机防盗
+							System.out.println("点击了第一个准备跳转了,手机防盗");
+							
+							showsafeDialog();//登陆 密码弹窗
+							break;
+						case 7:
+							//跳转的高级工具
+							System.out.println("点击了第八个准备跳转了,高级工具");
+						    startActivity(new Intent(getApplicationContext(),AToolsActivity.class));
+							break;		
+						case 8:
+							//跳转的设置中心
+							System.out.println("点击了第九个准备跳转了,设置中心");
+						    startActivity(new Intent(getApplicationContext(),SettingActivity.class));
+							break;
+		
+						default:
+							break;
+				   }
+			
+		    }
+			
+		});//item监听结束	
+
+###七:ListView  item的监听滚动滑动 事件
+
+   * 案例:软件管理
+   * 代码:
+   
+	         //ListView的滑动事件
+			lvList.setOnScrollListener(new OnScrollListener() {
+				
+					@Override
+					public void onScrollStateChanged(AbsListView view, int scrollState) {
+						
+					}
+					
+					@Override
+					public void onScroll(AbsListView view, int firstVisibleItem,
+							int visibleItemCount, int totalItemCount) {
+						// firstVisibleItem当前界面第一个item的位置
+						if (mUserList != null && mSystemList != null) {
+							System.out.println("onScroll......");
+							if (firstVisibleItem >= mUserList.size() + 1){
+								tvHeader.setText("系统应用(" + mSystemList.size() + ")");
+							}else {
+								tvHeader.setText("用户应用(" + mUserList.size() + ")");
+							} 
+						}
+					}
+			});
+  

@@ -1,0 +1,49 @@
+
+
+//1.用代码设置样式,点击后出现灰色背景
+
+(1) btn_shape_selector.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+   
+    <item android:state_pressed="true"
+        android:drawable="@drawable/shape_rectangle" />
+   
+    <item
+         android:drawable="@color/transparent" />
+</selector>
+
+(2) shape_rectangle.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!--  自动义图形用-->
+   
+    <!-- 角半径 -->
+    <corners android:radius="5dp" />
+    <solid android:color="@color/gray"/>
+</shape>
+
+(3)@color/transparent   透明背景   <color name= "transparent">#0000</color>
+
+<!-- 根据button的源码看出按钮点击前后效果的设置,资源文件,设置完成后再button控件中
+直接background调用这个xml就行 -->
+---------------------------------------------------------------------------------------------------------------
+
+//2.点击图片发生变化
+btn_light_green_selector.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+   
+    <item android:state_pressed="true"
+        android:drawable="@drawable/btn_green_pressed" />
+   
+    <item
+         android:drawable="@drawable/btn_green_normal" />
+</selector>
+
+<!-- 根据button的源码看出按钮点击前后效果的设置,更换为自定义的.9.png图片,设置完成后再button控件中
+直接background调用这个xml就行 -->

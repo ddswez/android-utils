@@ -1,0 +1,31 @@
+<ProgressBar
+                android:id="@+id/pb_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:padding="5dp"
+                android:layout_height="wrap_content" 
+                android:progressDrawable="@drawable/custom_progress"
+                />
+
+custom_progress.xml  :文件
+
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@android:id/background"
+        android:drawable="@drawable/security_progress_bg"/>
+    <item
+        android:id="@android:id/secondaryProgress"
+        android:drawable="@drawable/security_progress">
+    </item>
+    <item
+        android:id="@android:id/progress"
+        android:drawable="@drawable/security_progress">
+    </item>
+
+</layer-list>
+
+
+pbProgress.setMax(max):最大值
+pbProgress.setProgress(progress):更新进度

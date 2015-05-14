@@ -1,0 +1,30 @@
+private void copyData(String dataName) {
+		File file = new File(getFilesDir(), dataName);
+		if(file.exists()){
+			//存在就不复制
+			return;
+		}
+		FileOutputStream fos = null;
+		InputStream inputStream = null;
+		try {
+			fos = new FileOutputStream(file);
+			//得到assets中的资源文件
+			inputStream = getAssets().open(dataName);
+			byte[] buff = new byte[1024];
+			int len = 0;
+			while((len=inputStream.read(buff))!=-1){
+				fos.write(buff, 0, len);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				inputStream.close();
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}

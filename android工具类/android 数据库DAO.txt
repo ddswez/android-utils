@@ -1,0 +1,211 @@
+import java.util.ArrayList;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.itheima.mobilesafe58.db.BlackNumberOpenHelper;
+import com.itheima.mobilesafe58.domain.BlackNumberInfo;
+
+/**
+ * 黑名单数据库封装, crud 单例模式
+ * 
+ * @author Kevin
+ * 
+ */
+public class BlackNumberDao {
+
+	private static BlackNumberDao sInstance;
+	private BlackNumberOpenHelper mHelper;
+
+	private BlackNumberDao(Context ctx) {
+		mHelper = new BlackNumberOpenHelper(ctx);
+	}
+
+	public static BlackNumberDao getInstance(Context ctx) {
+		if (sInstance == null) {
+			synchronized (BlackNumberDao.class) {
+				if (sInstance == null) {
+					sInstance = new BlackNumberDao(ctx);
+				}
+			}
+		}
+
+		return sInstance;
+	}
+
+	/**
+	 * 添加黑名单
+	 * 
+	 * @param number
+	 *            电话号码
+	 * @param mode
+	 *            拦截模式
+	 */
+	public void add(String number, int mode) {
+		SQLiteDatabase db = mHelper.getWritableDatabase();
+
+		ContentValues values = new ContentValues();
+		values.put("number", number);
+		values.put("mode", mode);
+
+		db.insert("blacknumber", null, values);
+
+		db.close();// 关闭数据库
+	}
+
+	/**
+	 * 删除
+	 * 
+	 * @param number
+	 */
+	public void delete(String number) {
+		SQLiteDatabase db = mHelper.getWritableDatabase();
+		db.delete("blacknumber", "number=?", new String[] { number });
+		db.close();
+	}
+
+	/**
+	 * 更新
+	 * 
+	 * @param number
+	 *            要更新的号码
+	 * @param mode
+	 *            更新后的模式
+	 */
+	public void update(String number, int mode) {
+		SQLiteDatabase db = mHelper.getWritableDatabase();
+
+		ContentValues values = new ContentValues();
+		values.put("mode", mode);
+
+		db.update("blacknumber", values, "number=?", new String[] { number });
+
+		db.close();
+	}
+
+	/**
+	 * 查询
+	 * 
+	 * @param number
+	 *            要查询的号码
+	 * @return
+	 */
+	public boolean find(String number) {
+		SQLiteDatabase db = mHelper.getWritableDatabase();
+
+		Cursor cursor = db.query("blacknumber",
+				new String[] { "number", "mode" }, "number=?",
+				new String[] { number }, null, null, null);
+
+		boolean exist = false;
+		if (cursor.moveToFirst()) {
+			exist = true;
+		}
+
+		cursor.close();
+		db.close();
+		return exist;
+	}
+
+	/**
+	 * 查找拦截模式
+	 * 
+	 * @param number
+	 * @return
+	 */
+	public int findMode(String number) {
+		SQLiteDatabase db = mHelper.getWritableDatabase();
+
+		Cursor cursor = db.query("blacknumber", new String[] { "mode" },
+				"number=?", new String[] { number }, null, null, null);
+
+		int mode = -1;
+		if (cursor.moveToFirst()) {
+			mode = cursor.getInt(0);
+		}
+
+		cursor.close();
+		db.close();
+		return mode;
+	}
+
+	/**
+	 * 查询所有黑名单号码
+	 */
+	public ArrayList<BlackNumberInfo> findAll() {
+		SQLiteDatabase db = mHelper.getWritableDatabase();
+
+		Cursor cursor = db
+				.query("blacknumber", new String[] { "number", "mode" }, null,
+						null, null, null, null);
+
+		ArrayList<BlackNumberInfo> list = new ArrayList<BlackNumberInfo>();
+		BlackNumberInfo info = null;
+		while (cursor.moveToNext()) {
+			String number = cursor.getString(0);
+			int mode = cursor.getInt(1);
+			info = new BlackNumberInfo();
+			info.number = number;
+			info.mode = mode;
+
+			list.add(info);
+			info = null;
+		}
+
+		cursor.close();
+		db.close();
+
+		return list;
+	}
+
+	/**
+	 * 分页查询黑名单号码 index: 起始位置
+	 */
+	public ArrayList<BlackNumberInfo> findPart(int index) {
+		SQLiteDatabase db = mHelper.getWritableDatabase();
+
+		Cursor cursor = db
+				.rawQuery(
+						"select number,mode from blacknumber order by _id desc limit ?,20",
+						new String[] { index + "" });// 逆序排列
+		ArrayList<BlackNumberInfo> list = new ArrayList<BlackNumberInfo>();
+		BlackNumberInfo info = null;
+		while (cursor.moveToNext()) {
+			String number = cursor.getString(0);
+			int mode = cursor.getInt(1);
+			info = new BlackNumberInfo();
+			info.number = number;
+			info.mode = mode;
+
+			list.add(info);
+			info = null;
+		}
+
+		cursor.close();
+		db.close();
+
+		return list;
+	}
+
+	/**
+	 * 获取总数量
+	 */
+	public int getTotalCount() {
+		SQLiteDatabase db = mHelper.getWritableDatabase();
+
+		Cursor cursor = db.rawQuery("select count(*) from blacknumber", null);
+
+		int total = 0;
+		if (cursor.moveToFirst()) {
+			total = cursor.getInt(0);
+		}
+
+		cursor.close();
+		db.close();
+
+		return total;
+	}
+
+}

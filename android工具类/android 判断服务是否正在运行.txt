@@ -1,0 +1,24 @@
+/**
+ * 判断服务是否正在运行的工具类
+ * @author Administrator
+ *
+ */
+public class ServiceStatusUtils {
+	public static boolean  isRunningService(Context con,String ServiceName){
+		//获取活动管理器
+		ActivityManager  am = (ActivityManager) con.getSystemService(Context.ACTIVITY_SERVICE);
+		//获取正在运行的活动,参数:表示最多可获取的活动数
+		List<RunningServiceInfo> services = am.getRunningServices(100);
+		//遍历每一个活动并与serviceName比较
+		for (RunningServiceInfo runningServiceInfo : services) {
+			//获取服务的完整的类名
+			String service = runningServiceInfo.service.getClassName();
+			
+			if(ServiceName.equals(service)){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+}

@@ -1,0 +1,32 @@
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+/**
+ * @author Administrator
+ *MD5加密
+ */
+public class MD5Utils {
+	public static String encode(String string){
+		try {
+			MessageDigest instance  = MessageDigest.getInstance("MD5");
+			byte[] digest = instance.digest(string.getBytes());
+			
+			StringBuffer sBuffer = new StringBuffer();
+			for (byte b : digest) {
+				//得到字节的后8位,1与0相&,相同为1,不同为0
+				int i = b &  0xff;
+				//转化为16进制
+				String hexString = Integer.toHexString(i);
+				if(hexString.length()<2){
+					hexString = "0"+hexString;
+				}
+				sBuffer .append(hexString);
+			}
+			return sBuffer.toString();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}
+	}
+}
